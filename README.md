@@ -15,28 +15,23 @@ You'll be able to test your database and ETL pipeline by running queries given t
 ### Project Structure
 ```
 Data-Warehouse-with-Redshift
-│   README.md                 # Project description
-|   dwh.cfg                   # Configuration file
-|   requirements.txt          # Python dependencies
+│   README.md              # Project description
+|   requirements.txt       # Python dependencies
 │
-└───src                       # Source code
+└───src                    # Source code
 |   |
-│   └───notebooks             # Jupyter notebooks
-|   |   |  validation.ipynb   # Run sql queries agains Redshift
-|   |   |
-|   └───scripts
-│       │  create_cluster.py  # Cluster creation script
-|       |  sql_queries.py     # Definition of all sql queries
-|       |  create_tables.py   # Schema creation script
-|       |  etl.py             # ETL script
-|       |  validation.py      # Validates data load
-|       |  delete_cluster.py  # Cluster deletion script
+│   │  create_resources.py # Resources creation script
+|   |  sql_objects.py      # Definition of all sql objects
+|   |  etl.py              # ETL script
+|   |  validation.py       # Validates data load
+|   |  delete_resources.py # Resources deletion script
+|   |  dwh.cfg             # Configuration file
 ```
 
 ### Requirements for running locally
 - Python3
 - AWS Account
-- [Configured AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-configure.html)
+- [Configured AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-quickstart.html)
 
 ### Datasets
 
@@ -121,38 +116,40 @@ This includes the following tables.
 ```
 ### Instructions for running locally
 
-Clone repository to local machine
+#### Clone repository to local machine
 ```
 git clone https://github.com/drobim-data-engineering/Data-Warehouse-with-Redshift.git
 ```
 
-Change directory to local repository
+#### Change directory to local repository
 ```
 cd Data-Warehouse-with-Redshift
 ```
 
-Create Python Virtual Environment
+####Create Python Virtual Environment
 ```
 python3 -m venv venv             # create virtualenv
 source venv/bin/activate         # activate virtualenv
 pip install -r requirements.txt  # install requirements
 ```
 
-Run scripts
+#### Edit dwh.cfg file
+
+- This file holds the configuration variables used on the scripts to create and configure the AWS resources.
+These are the variables the user needs to set up before running the `etl.py` script.
+
+```
+KEY = <ENTER AWS ACCESS KEY>   # paste your user Access Key
+SECRET = <ENTER AWS SECRET KEY>  # paste your user Secret Key
+VPC_ID = <ENTER VPC ID>  # paste the VPC_ID you want to create the resources
+```
+<b>REMEMBER:</b> Never save your <b>AWS ACCESS KEY & SECRET KEY</b> on scripts.
+This is just an experiment to get familiarized with AWS SDK for Python.
+
+#### Run script
 ```
 cd src/
-python -m create_cluster.py  # take note of Endpoint, Role_ARN and Security_Group output
-python -m create_tables.py   # create tables on Redshift Cluster
-python -m etl.py             # load data into staging tables, transform and load into fact and dim tables
-python -m validation.py      # validates the data load on Redshift
-python -m delete_cluster.py  # delete Redshift Cluster
+python -m etl.py # Entry point to kick-off a series of processes from creating resources to running validation queries.
 ```
-
-Check results
-
-```
-jupyter notebook  # launch jupyter notebook app
-
-The notebook interface will appear in a new browser window or tab.
-Navigate to src/validation.ipynb and run the code cells step by step
-```
+The `etl.py` script was designed to delete ALL AWS resources provisioned after running the validation step.
+The execution of this script incur <b>REAL MONEY</b> costs so be aware of that.
