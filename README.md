@@ -126,7 +126,7 @@ git clone https://github.com/drobim-data-engineering/Data-Warehouse-with-Redshif
 cd Data-Warehouse-with-Redshift
 ```
 
-####Create Python Virtual Environment
+#### Create Python Virtual Environment
 ```
 python3 -m venv venv             # create virtualenv
 source venv/bin/activate         # activate virtualenv
@@ -141,7 +141,7 @@ These are the variables the user needs to set up before running the `etl.py` scr
 ```
 KEY = <ENTER AWS ACCESS KEY>   # paste your user Access Key
 SECRET = <ENTER AWS SECRET KEY>  # paste your user Secret Key
-VPC_ID = <ENTER VPC ID>  # paste the VPC_ID you want to create the resources
+VPC_ID = <ENTER VPC ID>  # paste the VPC_ID you want to create the resources (If blank the first VPC returned from the API Call is used)
 ```
 <b>REMEMBER:</b> Never save your <b>AWS ACCESS KEY & SECRET KEY</b> on scripts.
 This is just an experiment to get familiarized with AWS SDK for Python.
