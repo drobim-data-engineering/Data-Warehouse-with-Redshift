@@ -135,7 +135,7 @@ pip install -r requirements.txt  # install requirements
 
 #### Edit dwh.cfg file
 
-- This file holds the configuration variables used on the scripts to create and configure the AWS resources.
+This file holds the configuration variables used on the scripts to create and configure the AWS resources.
 These are the variables the user needs to set up before running the `etl.py` script.
 
 ```
@@ -144,6 +144,7 @@ SECRET = <ENTER AWS SECRET KEY>  # paste your user Secret Key
 VPC_ID = <ENTER VPC ID>  # paste the VPC_ID you want to create the resources (If blank the first VPC on user's AWS account is considered)
 ```
 <b>REMEMBER:</b> Never save your <b>AWS ACCESS KEY & SECRET KEY</b> on scripts.
+
 This is just an experiment to get familiarized with AWS SDK for Python.
 
 #### Run script
@@ -152,4 +153,5 @@ cd src/
 python -m etl.py # Entry point to kick-off a series of processes from creating resources to running validation queries.
 ```
 The `etl.py` script was designed to delete ALL AWS resources provisioned after running the validation step.
+
 The execution of this script incur <b>REAL MONEY</b> costs so be aware of that.
