@@ -136,6 +136,7 @@ pip install -r requirements.txt  # install requirements
 #### Edit dwh.cfg file
 
 This file holds the configuration variables used on the scripts to create and configure the AWS resources.
+
 These are the variables the user needs to set up before running the `etl.py` script.
 
 ```
