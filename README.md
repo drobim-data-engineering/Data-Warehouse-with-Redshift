@@ -141,7 +141,7 @@ These are the variables the user needs to set up before running the `etl.py` scr
 ```
 KEY = <ENTER AWS ACCESS KEY>   # paste your user Access Key
 SECRET = <ENTER AWS SECRET KEY>  # paste your user Secret Key
-VPC_ID = <ENTER VPC ID>  # paste the VPC_ID you want to create the resources (If blank the first VPC returned from the API Call is used)
+VPC_ID = <ENTER VPC ID>  # paste the VPC_ID you want to create the resources (If blank the first VPC on user's AWS account is considered)
 ```
 <b>REMEMBER:</b> Never save your <b>AWS ACCESS KEY & SECRET KEY</b> on scripts.
 This is just an experiment to get familiarized with AWS SDK for Python.
