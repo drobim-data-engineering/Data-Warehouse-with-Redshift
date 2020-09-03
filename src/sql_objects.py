@@ -7,6 +7,11 @@ config = configparser.ConfigParser()
 config.read(config_file)
 
 def create_connection():
+    """Creates Redshift Connection
+
+    Returns:
+        SQL Connection Object: Cursor and Connection objects used to execute queries
+    """
     # Read CFG File
     config = configparser.ConfigParser()
     config.read(config_file)
@@ -24,6 +29,12 @@ def create_connection():
     return cur, conn
 
 def drop_tables(cur, conn):
+    """Drop Table on Redshift
+
+    Args:
+        cur (cursor object): Cursor Object used to retrieve rows from SQL Engine
+        conn (connection object): Connection to SQL Engine
+    """
     for query in drop_table_queries:
         try:
             cur.execute(query)
@@ -32,6 +43,12 @@ def drop_tables(cur, conn):
             print(e)
 
 def create_tables(cur, conn):
+    """Create Table on Redshift
+
+    Args:
+        cur (cursor object): Cursor Object used to retrieve rows from SQL Engine
+        conn (connection object): Connection to SQL Engine
+    """
     for query in create_table_queries:
         try:
             cur.execute(query)
@@ -40,6 +57,12 @@ def create_tables(cur, conn):
             print(e)
 
 def load_staging_tables(cur, conn):
+    """Load data into staging tables on Redshift
+
+    Args:
+        cur (cursor object): Cursor Object used to retrieve rows from SQL Engine
+        conn (connection object): Connection to SQL Engine
+    """
     for query in copy_table_queries:
         try:
             cur.execute(query)
@@ -48,6 +71,12 @@ def load_staging_tables(cur, conn):
             print(e)
 
 def insert_tables(cur, conn):
+    """Load data into dimension tables on Redshift
+
+    Args:
+        cur (cursor object): Cursor Object used to retrieve rows from SQL Engine
+        conn (connection object): Connection to SQL Engine
+    """
     for query in insert_table_queries:
         try:
             cur.execute(query)
@@ -56,6 +85,13 @@ def insert_tables(cur, conn):
             print(e)
 
 def execute_query(cur, conn, query):
+    """Execute SQL query on Redshift
+
+    Args:
+        cur (cursor object): Cursor Object used to retrieve rows from SQL Engine
+        conn (connection object): Connection to SQL Engine
+        query (string): SQL Query
+    """
     try:
         cur.execute(query)
         rows = cur.fetchall()
@@ -66,13 +102,13 @@ def execute_query(cur, conn, query):
         print(e)
 
 def get_query(question_number):
-    """Function to return a CQL query based on a question number
+    """Function to return a SQL query based on a question number
 
     Args:
-        question_number ([int]): [Question number the user wants to answer]
+        question_number (int): Question number the user wants to answer
 
     Returns:
-        [string]: [SQL Query]
+        string: SQL Query
     """
     query = {
               1: "select a.name as artist_name, Count(1) As Plays from songplays as sp inner join artists as a on sp.artist_id = a.artist_id Group By Name Order By Plays Desc Limit 10"

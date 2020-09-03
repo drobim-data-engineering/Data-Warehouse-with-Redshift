@@ -24,6 +24,14 @@ iam_client = boto3.client('iam', aws_access_key_id=KEY, aws_secret_access_key=SE
 ec2_client = boto3.client('ec2', region_name='us-west-2', aws_access_key_id=KEY, aws_secret_access_key=SECRET)
 
 def update_config_file(config_file, section, key, value):
+    """Writes to an existing config file
+
+    Args:
+        config_file (ConfigParser object): Configuration file the user wants to update
+        section (string): The section on the config file the user wants to write
+        key (string): The key the user wants to write
+        value (string): The value the user wants to write
+    """
     try:
         # Reading cfg file
         config = configparser.ConfigParser()
@@ -39,6 +47,15 @@ def update_config_file(config_file, section, key, value):
         print(f'ERROR: {e}')
 
 def create_iam_role(config, arn_policy):
+    """Creates IAM Role on AWS
+
+    Args:
+      config (ConfigParser object): Configuration File to define Resource configuration
+      arn_policy (string): ARN Policy you want to attach to the IAM Role
+
+    Returns:
+      dictionary: IAM Role Information
+    """
     try:
         response = iam_client.get_role(RoleName=config.get('SECURITY', 'ROLE_NAME'))
         print('IAM Role already exists: ' + response['Role']['Arn'])
@@ -70,6 +87,11 @@ def create_iam_role(config, arn_policy):
           print(e)
 
 def create_cluster_security_group():
+  """Creates VPC Security Group on AWS
+
+  Returns:
+      string: Security Group ID
+  """
   try:
     response = ec2_client.describe_security_groups(Filters= [{"Name": "group-name", "Values": [config.get('SECURITY', 'SG_Name')]}])
   except ClientError as e:
@@ -109,12 +131,15 @@ def create_cluster_security_group():
         print(e)
 
 def create_redshift_cluster(config, iam_role_arn, cluster_sg_id):
-   """Create an Amazon Redshift cluster
+   """Creates an Amazon Redshift cluster on AWS
 
-    The function returns without waiting for the cluster to be fully created.
+   Args:
+      config (ConfigParser object): Configuration File to define Resource configuration
+      iam_role_arn (string): AWS IAM role to attached on Cluster
+      cluster_sg_id (string): AWS VPC Security Group ID
 
-    :param config: configparser object; Contains necessary configurations
-    :return: dictionary containing cluster information, otherwise None.
+   Returns:
+      dictionary: AWS Redshift Cluster Information
    """
    try:
      response = redshift_client.describe_clusters(ClusterIdentifier=config.get('CLUSTER', 'CLUSTERIDENTIFIER'))
@@ -144,12 +169,13 @@ def create_redshift_cluster(config, iam_role_arn, cluster_sg_id):
        return None
 
 def wait_for_cluster_creation(cluster_id):
-    """Create an Amazon Redshift cluster
+    """Verifies if AWS Redshift Cluster was created
 
-    The function returns without waiting for the cluster to be fully created.
+    Args:
+      cluster_id (string): AWS Redshift Cluster Name
 
-    :param cluster_id: string; Cluster identifier
-    :return: dictionary containing cluster information.
+    Returns:
+      dictionary: AWS Redshift Cluster Information
     """
     while True:
         response = redshift_client.describe_clusters(ClusterIdentifier=cluster_id)

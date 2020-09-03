@@ -17,12 +17,13 @@ iam_client = boto3.client('iam', aws_access_key_id=KEY, aws_secret_access_key=SE
 ec2_client = boto3.client('ec2', region_name='us-west-2', aws_access_key_id=KEY, aws_secret_access_key=SECRET)
 
 def delete_redshift_cluster(config):
-    """Create an Amazon Redshift cluster
+    """Deletes AWS Redshift Cluster
 
-    The function returns without waiting for the cluster to be fully created.
+    Args:
+        config (ConfigParser object): Configuration File to define Resource configuration
 
-    :param config: configparser object; Contains necessary configurations
-    :return: dictionary containing cluster information, otherwise None.
+    Returns:
+        dictionary: AWS Redshift Information
     """
     try:
         response = redshift_client.delete_cluster(
@@ -36,6 +37,11 @@ def delete_redshift_cluster(config):
         return response['Cluster']
 
 def wait_for_cluster_deletion(cluster_id):
+    """Verifies if AWS Redshift Cluster was deleted
+
+    Args:
+        cluster_id (dictionary): AWS Redshift Cluster Information
+    """
     while True:
         try:
             redshift_client.describe_clusters(ClusterIdentifier=cluster_id)
@@ -45,7 +51,12 @@ def wait_for_cluster_deletion(cluster_id):
             time.sleep(60)
 
 def delete_iam_role(config, arn_policy):
-    """Delete IAM role for redshift"""
+    """Deletes AWS IAM Role
+
+    Args:
+        config (ConfigParser object): Configuration File to define Resource configuration
+        arn_policy (string): ARN Policy you want to detach from the IAM Role
+    """
     try:
         iam_client.detach_role_policy(
             RoleName=config.get('SECURITY', 'ROLE_NAME'),
@@ -57,7 +68,11 @@ def delete_iam_role(config, arn_policy):
         print("IAM Role '%s' does not exist!" % (config.get('SECURITY', 'ROLE_NAME')))
 
 def delete_security_group(config):
-    """Delete redshift security group"""
+    """Deletes AWS VPC Security Group
+
+    Args:
+        config (ConfigParser object): Configuration File to define Resource configuration
+    """
     try:
         ec2_client.delete_security_group(GroupId=config.get('SECURITY', 'SG_ID'))
         print('Security Group deleted.')
